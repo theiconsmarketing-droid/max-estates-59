@@ -17,8 +17,5 @@
     "real-estate"
   ],
   "author": "Avinav Kashyap",
-  "license": "ISC",
-  "devDependencies": {
-    "http-server": "^14.1.1"
-  }
+  "license": "ISC"
 }
