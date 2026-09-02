@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "An ultra-luxury landing page designed for Max Estates Sector 59, Gurugram (Bungalows in the Sky).",
   "scripts": {
-    "build": "mkdir -p dist && cp -r assets index.html thank-you.html robots.txt .htaccess dist/"
+    "build": "mkdir -p dist && cp -r assets index.html thank-you.html robots.txt .htaccess dist/",
+    "start": "http-server dist -p 8080"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1"
   },
   "repository": {
     "type": "git",
