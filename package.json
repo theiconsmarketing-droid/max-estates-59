@@ -1,11 +1,8 @@
 {
   "name": "max-estates-59",
   "version": "1.0.0",
-  "description": "An ultra-luxury landing page designed for **Max Estates Sector 59**, Gurugram (Bungalows in the Sky).",
-  "main": "index.html",
+  "description": "An ultra-luxury landing page designed for Max Estates Sector 59, Gurugram (Bungalows in the Sky).",
   "scripts": {
-    "dev": "http-server . -p 8080",
-    "start": "http-server . -p 8080",
     "build": "mkdir -p dist && cp -r assets index.html thank-you.html robots.txt .htaccess dist/"
   },
   "repository": {
