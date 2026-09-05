@@ -228,15 +228,13 @@
         );
       }
 
-      // Handle UI after submission attempts
+      // Handle UI after submission attempts — redirect to thank-you page
+      // so GTM fires and Google Ads conversion is tracked
       Promise.allSettled(promises).then(() => {
-        // Show success state on UI
-        form.style.display = 'none';
-        success.style.display = 'flex';
+        window.location.href = 'thank-you.html';
       }).catch(() => {
-        // Fallback: show success anyway so user experience is smooth
-        form.style.display = 'none';
-        success.style.display = 'flex';
+        // Redirect anyway so conversion tracking still fires
+        window.location.href = 'thank-you.html';
       });
     });
   }
