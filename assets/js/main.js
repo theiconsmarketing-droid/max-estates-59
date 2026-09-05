@@ -134,6 +134,9 @@
     requestAnimationFrame(update);
   }
 
+  // ── Google Apps Script Webhook ──
+  const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbz-13a_fCKU5SxIAMEeklyY6ippiCUe0E76D1YEWG1fO6pw-uMYS8xuPvstUH4HOzzqbg/exec';
+
   // ── Form handling ──
   function setupForm(formId, successId) {
     const form = document.getElementById(formId);
@@ -179,40 +182,28 @@
       const formData = new FormData(form);
       const data = {};
       formData.forEach((value, key) => { data[key] = value; });
+      data.source = formId; // track which form was submitted
 
-      // Log the lead locally
-      console.log('Lead captured:', data);
-
-      // To connect to a real CRM or email service (e.g., Web3Forms, Zapier, Formspree):
-      /*
-      fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          access_key: "YOUR_ACCESS_KEY_HERE",
-          subject: "New Lead: Max Estates 59",
-          ...data
-        })
-      })
-      .then(response => response.json())
-      .then(result => console.log('Lead submitted', result))
-      .catch(error => console.error('Error submitting lead:', error));
-      */
-
-      // Redirect to Thank You page
-      // Using a short timeout to let the submit button animation finish
+      // Disable submit button while sending
       const submitBtn = form.querySelector('button[type="submit"]');
-      const originalText = submitBtn.innerHTML;
       submitBtn.innerHTML = 'Submitting...';
       submitBtn.style.opacity = '0.7';
       submitBtn.style.pointerEvents = 'none';
 
-      setTimeout(() => {
-        window.location.href = 'thank-you.html';
-      }, 600);
+      // Send lead to Google Sheet + Email via Apps Script webhook
+      fetch(WEBHOOK_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .catch(err => console.warn('Webhook error (non-critical):', err))
+      .finally(() => {
+        // Redirect to Thank You page regardless of webhook result
+        setTimeout(() => {
+          window.location.href = 'thank-you.html';
+        }, 400);
+      });
     });
   }
 
