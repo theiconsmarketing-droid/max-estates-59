@@ -134,8 +134,10 @@
     requestAnimationFrame(update);
   }
 
-  // ── Google Apps Script Webhook ──
-  const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbz-13a_fCKU5SxIAMEeklyY6ippiCUe0E76D1YEWG1fO6pw-uMYS8xuPvstUH4HOzzqbg/exec';
+  // ── Form Endpoints ──
+  // Replace this with your published Google Apps Script Web App URL
+  const GOOGLE_SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbw-4XKZTJStKCNNw3Ux3f2MYN562UHWC5TdfBchNr60S6-c9oIgv330o-c2xIaArSowcQ/exec';
+  const FORMSUBMIT_URL = 'https://formsubmit.co/ajax/iconsn6@gmail.com';
 
   // ── Form handling ──
   function setupForm(formId, successId) {
@@ -182,27 +184,59 @@
       const formData = new FormData(form);
       const data = {};
       formData.forEach((value, key) => { data[key] = value; });
-      data.source = formId; // track which form was submitted
+      data.website   = window.location.hostname || 'maxestates59gurgaon.in';
+      data._subject  = `New Lead — Max Estates Sector 59 (${data.website})`;
+      data._template = 'table';
+      data._captcha  = 'false';
+      data.source    = formId; // track which form was submitted
+      data.timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
       // Disable submit button while sending
       const submitBtn = form.querySelector('button[type="submit"]');
+      const originalHTML = submitBtn.innerHTML;
       submitBtn.innerHTML = 'Submitting...';
       submitBtn.style.opacity = '0.7';
       submitBtn.style.pointerEvents = 'none';
 
-      // Send lead to Google Sheet + Email via Apps Script webhook
-      fetch(WEBHOOK_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
-      .catch(err => console.warn('Webhook error (non-critical):', err))
-      .finally(() => {
-        // Redirect to Thank You page regardless of webhook result
-        setTimeout(() => {
-          window.location.href = 'thank-you.html';
-        }, 400);
+      const promises = [];
+
+      // 1. Post to Google Apps Script Webhook (for Google Sheet logging)
+      if (GOOGLE_SHEETS_WEBHOOK_URL && !GOOGLE_SHEETS_WEBHOOK_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_WEBAPP_URL')) {
+        promises.push(
+          fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          }).catch(err => console.warn('Google Sheets Webhook error:', err))
+        );
+      }
+
+      // 2. Post to FormSubmit AJAX (for instant email delivery to iconsn6@gmail.com)
+      if (FORMSUBMIT_URL) {
+        promises.push(
+          fetch(FORMSUBMIT_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+          })
+          .then(res => res.json())
+          .catch(err => console.warn('FormSubmit error:', err))
+        );
+      }
+
+      // Handle UI after submission attempts
+      Promise.allSettled(promises).then(() => {
+        // Show success state on UI
+        form.style.display = 'none';
+        success.style.display = 'flex';
+      }).catch(() => {
+        // Fallback: show success anyway so user experience is smooth
+        form.style.display = 'none';
+        success.style.display = 'flex';
       });
     });
   }
