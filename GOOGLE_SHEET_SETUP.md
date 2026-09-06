@@ -64,5 +64,6 @@ function doGet(e) {
 
 ---
 
-## Critical Check in Apps Script:
+## Critical Check in Apps Script
+
 Whenever you update code in `Code.gs`, click **Deploy** → **Manage deployments** → Click the **✏️ Pencil Icon** → Select **Version: New version** → Click **Deploy** so the active Web App runs the latest code!
