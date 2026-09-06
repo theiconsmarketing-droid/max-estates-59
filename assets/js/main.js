@@ -149,33 +149,83 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
 
-      // Basic validation
-      const inputs = form.querySelectorAll('input[required], select[required]');
+      // Clear previous errors
+      form.querySelectorAll('.form-error').forEach(el => {
+        el.textContent = '';
+        el.style.display = 'none';
+      });
+      form.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+
       let valid = true;
 
-      inputs.forEach(input => {
-        if (!input.value.trim()) {
-          valid = false;
-          input.style.borderColor = '#e74c3c';
-          input.addEventListener('input', function handler() {
-            input.style.borderColor = '';
-            input.removeEventListener('input', handler);
-          });
+      // Helper: show error under a field
+      function showError(input, message) {
+        valid = false;
+        input.classList.add('input-error');
+        const errorEl = input.parentElement.querySelector('.form-error');
+        if (errorEl) {
+          errorEl.textContent = message;
+          errorEl.style.display = 'block';
         }
-      });
+        // Auto-clear on user input
+        input.addEventListener('input', function handler() {
+          input.classList.remove('input-error');
+          if (errorEl) { errorEl.textContent = ''; errorEl.style.display = 'none'; }
+          input.removeEventListener('input', handler);
+        });
+      }
+
+      // Name validation
+      const nameInput = form.querySelector('input[name="name"]');
+      if (nameInput) {
+        const name = nameInput.value.trim();
+        if (!name) {
+          showError(nameInput, 'Please enter your full name');
+        } else if (name.length < 2) {
+          showError(nameInput, 'Name must be at least 2 characters');
+        } else if (!/^[a-zA-Z\s.''-]+$/.test(name)) {
+          showError(nameInput, 'Name should only contain letters');
+        }
+      }
 
       // Email validation
       const emailInput = form.querySelector('input[type="email"]');
-      if (emailInput && emailInput.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
-        valid = false;
-        emailInput.style.borderColor = '#e74c3c';
+      if (emailInput) {
+        const email = emailInput.value.trim();
+        if (!email) {
+          showError(emailInput, 'Please enter your email address');
+        } else if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(email)) {
+          showError(emailInput, 'Please enter a valid email (e.g. name@example.com)');
+        }
       }
 
-      // Phone validation
+      // Indian phone number validation
       const phoneInput = form.querySelector('input[type="tel"]');
-      if (phoneInput && phoneInput.value && !/^[\+]?[\d\s-]{8,15}$/.test(phoneInput.value.trim())) {
-        valid = false;
-        phoneInput.style.borderColor = '#e74c3c';
+      if (phoneInput) {
+        // Strip spaces, dashes, and dots for validation
+        let phone = phoneInput.value.trim().replace(/[\s\-\.]/g, '');
+
+        if (!phone) {
+          showError(phoneInput, 'Please enter your phone number');
+        } else {
+          // Remove +91 or 91 prefix if present
+          if (phone.startsWith('+91')) phone = phone.substring(3);
+          else if (phone.startsWith('91') && phone.length > 10) phone = phone.substring(2);
+          // Remove leading 0 if present
+          if (phone.startsWith('0')) phone = phone.substring(1);
+
+          if (!/^\d{10}$/.test(phone)) {
+            showError(phoneInput, 'Enter a valid 10-digit Indian mobile number');
+          } else if (!/^[6-9]/.test(phone)) {
+            showError(phoneInput, 'Indian mobile numbers start with 6, 7, 8 or 9');
+          }
+        }
+      }
+
+      // Configuration (select) validation
+      const configSelect = form.querySelector('select[name="configuration"]');
+      if (configSelect && !configSelect.value) {
+        showError(configSelect, 'Please select a configuration');
       }
 
       if (!valid) return;
