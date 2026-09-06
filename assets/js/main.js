@@ -136,7 +136,7 @@
 
   // ── Form Endpoints ──
   // Replace this with your published Google Apps Script Web App URL
-  const GOOGLE_SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbw-4XKZTJStKCNNw3Ux3f2MYN562UHWC5TdfBchNr60S6-c9oIgv330o-c2xIaArSowcQ/exec';
+  const GOOGLE_SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxHhNakHiHDS3-W4hNg7RiUCUE_SquL9LIpYWwDeHKaQY2y5ujQjXSo1f1rDocrYOyXxQ/exec';
   const FORMSUBMIT_URL = 'https://formsubmit.co/ajax/iconsn6@gmail.com';
 
   // ── Form handling ──
