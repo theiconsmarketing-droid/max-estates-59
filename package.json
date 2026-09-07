@@ -1,14 +1,28 @@
 {
   "name": "max-estates-59",
   "version": "1.0.0",
-  "description": "An ultra-luxury landing page designed for Max Estates Sector 59, Gurugram (Bungalows in the Sky).",
-  "main": "server.js",
+  "description": "Ultra-luxury landing page for Max Estates Sector 59, Gurugram — Bungalows in the Sky.",
+  "main": "dist/server.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
-    "build": "mkdir -p dist && cp -r assets index.html thank-you.html robots.txt .htaccess dist/",
-    "start": "node server.js"
+    "dev": "ts-node src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "prebuild": "rm -rf dist"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "@types/compression": "^1.7.5",
+    "compression": "^1.7.4",
+    "express": "^5.2.1",
+    "helmet": "^7.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.0"
   },
   "repository": {
     "type": "git",
@@ -16,7 +30,9 @@
   },
   "keywords": [
     "landing-page",
-    "real-estate"
+    "real-estate",
+    "luxury",
+    "max-estates"
   ],
   "author": "Avinav Kashyap",
   "license": "ISC"
