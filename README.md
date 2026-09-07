@@ -1,6 +1,6 @@
 # Max Estates 59 — Landing Page
 
-An ultra-luxury landing page for **Max Estates Sector 59**, Gurugram (Bungalows in the Sky).  
+An ultra-luxury landing page for **Max Estates Sector 59**, Gurugram (Bungalows in the Sky).
 Built with **HTML / CSS / Vanilla JS** on the frontend, served by a **Node.js + TypeScript + Express** backend.
 
 ---
@@ -18,7 +18,7 @@ Built with **HTML / CSS / Vanilla JS** on the frontend, served by a **Node.js + 
 
 ## 📁 Project Structure
 
-```
+```text
 max-estates-59/
 ├── src/
 │   └── server.ts          # Node.js + TypeScript Express server
@@ -41,7 +41,8 @@ max-estates-59/
 ## 🚀 Local Development
 
 ### Prerequisites
-- Node.js v20+ ([nvm](https://github.com/nvm-sh/nvm) recommended)
+
+- Node.js v20+ ([nvm](<https://github.com/nvm-sh/nvm>) recommended)
 
 ```bash
 # Use the correct Node version
@@ -75,7 +76,7 @@ npm start
 In Hostinger's Node.js panel, set:
 
 | Setting | Value |
-|---|---|
+| --- | --- |
 | Node version | 20 |
 | Install command | `npm install` |
 | Build command | `npm run build` |
@@ -83,6 +84,7 @@ In Hostinger's Node.js panel, set:
 | Startup file | `dist/server.js` |
 
 The server handles:
+
 - ✅ Security headers (via `helmet`)
 - ✅ Gzip compression (via `compression`)
 - ✅ HTTPS redirect (via `X-Forwarded-Proto` header)
