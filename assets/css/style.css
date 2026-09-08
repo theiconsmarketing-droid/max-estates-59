@@ -941,8 +941,8 @@ a:hover { color: var(--accent-light); }
   align-items: center;
   gap: 8px;
   background: rgba(15, 15, 26, 0.92);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   color: var(--gold);
   font-size: 0.82rem;
