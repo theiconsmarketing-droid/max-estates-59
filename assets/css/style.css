@@ -194,16 +194,26 @@ a:hover { color: var(--accent-light); }
   background: transparent;
 }
 .navbar.scrolled {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.97);
   -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
   padding: 10px 0;
 }
 .navbar.scrolled .nav-logo-text { color: var(--text); }
-.navbar.scrolled .nav-logo-sub { color: var(--text-dim); }
-.navbar.scrolled .nav-links a { color: var(--text-dim); }
+.navbar.scrolled .nav-logo-sub { color: var(--text-muted); }
+/* Nav links — dark & clearly legible on white background */
+.navbar.scrolled .nav-links a { color: var(--text); }
+.navbar.scrolled .nav-links a:hover { color: var(--accent); }
 .navbar.scrolled .mobile-toggle span { background: var(--text); }
+/* CTA button — solid gold on scrolled white navbar */
+.navbar.scrolled .nav-cta {
+  background: var(--accent) !important;
+  color: #fff !important;
+  border-color: var(--accent) !important;
+  opacity: 1 !important;
+}
 .navbar .container {
   display: flex;
   align-items: center;
