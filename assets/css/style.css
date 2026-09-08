@@ -917,19 +917,49 @@ a:hover { color: var(--accent-light); }
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--border);
-  min-height: 400px;
+  height: 100%;
+  min-height: 480px;
   background: var(--primary-deep);
+  display: flex;
 }
 .location-map iframe {
   width: 100%;
   height: 100%;
-  min-height: 400px;
+  min-height: 480px;
   border: none;
-  filter: brightness(0.8) contrast(1.1) saturate(0.7);
+  filter: brightness(0.92) contrast(1.04);
   transition: filter 0.4s var(--ease-out);
 }
 .location-map:hover iframe {
-  filter: brightness(0.9) contrast(1.05) saturate(0.85);
+  filter: brightness(1) contrast(1);
+}
+.map-directions-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 15, 26, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  color: var(--gold);
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 9px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: all 0.3s var(--ease-out);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+  z-index: 2;
+}
+.map-directions-btn:hover {
+  background: var(--gold);
+  color: #0f0f1a;
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(197, 160, 89, 0.45);
 }
 
 /* ============================================================
