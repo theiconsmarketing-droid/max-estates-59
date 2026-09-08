@@ -139,6 +139,130 @@
   const GOOGLE_SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxHhNakHiHDS3-W4hNg7RiUCUE_SquL9LIpYWwDeHKaQY2y5ujQjXSo1f1rDocrYOyXxQ/exec';
   const FORMSUBMIT_URL = 'https://formsubmit.co/ajax/iconsn6@gmail.com';
 
+  // ── Hidden Lead Attribution & Device/IP Tracking ──
+  // 1. Capture Click IDs & UTMs from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const tracking = {
+    gclid: urlParams.get('gclid') || '',
+    gbraid: urlParams.get('gbraid') || '',
+    wbraid: urlParams.get('wbraid') || '',
+    utm_source: urlParams.get('utm_source') || '',
+    utm_medium: urlParams.get('utm_medium') || '',
+    utm_campaign: urlParams.get('utm_campaign') || ''
+  };
+
+  // Persist tracking parameters across page navigation, reloads, and anchor clicks
+  try {
+    ['gclid', 'gbraid', 'wbraid', 'utm_source', 'utm_medium', 'utm_campaign'].forEach(key => {
+      if (tracking[key]) {
+        sessionStorage.setItem('_max59_' + key, tracking[key]);
+        localStorage.setItem('_max59_' + key, tracking[key]);
+      } else {
+        tracking[key] = sessionStorage.getItem('_max59_' + key) || localStorage.getItem('_max59_' + key) || '';
+      }
+    });
+  } catch (e) {
+    // Graceful fallback for restrictive environments (e.g. Safari private mode)
+  }
+
+  // 2. Persistent Device ID & Device Type Detection
+  function getDeviceId() {
+    const key = '_max59_device_id';
+    try {
+      let id = localStorage.getItem(key) || sessionStorage.getItem(key);
+      if (!id) {
+        id = 'DEV-' + Math.random().toString(36).substring(2, 9).toUpperCase() + '-' + Date.now().toString(36).toUpperCase();
+        localStorage.setItem(key, id);
+        sessionStorage.setItem(key, id);
+      }
+      return id;
+    } catch (e) {
+      return 'DEV-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+    }
+  }
+
+  function getDeviceType() {
+    const ua = navigator.userAgent || '';
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+      return 'Tablet';
+    }
+    if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/i.test(ua)) {
+      return 'Mobile';
+    }
+    return 'Desktop';
+  }
+
+  const deviceId = getDeviceId();
+  const deviceType = getDeviceType();
+
+  // 3. IP Address & Geolocation (City, State/Region, Country, Postal Code)
+  let geoData = {
+    ip: '',
+    city: '',
+    region: '',
+    country: '',
+    postal: '',
+    location: '',
+    isp: ''
+  };
+
+  // Restore cached geolocation if available in sessionStorage to avoid repeated API requests
+  try {
+    const cached = sessionStorage.getItem('_max59_geo');
+    if (cached) {
+      geoData = JSON.parse(cached);
+    }
+  } catch (e) {}
+
+  function syncHiddenInputs() {
+    document.querySelectorAll('input[name="gclid"]').forEach(el => { el.value = tracking.gclid; });
+    document.querySelectorAll('input[name="gbraid"]').forEach(el => { el.value = tracking.gbraid; });
+    document.querySelectorAll('input[name="wbraid"]').forEach(el => { el.value = tracking.wbraid; });
+    document.querySelectorAll('input[name="device_id"]').forEach(el => { el.value = deviceId; });
+    document.querySelectorAll('input[name="device_type"]').forEach(el => { el.value = deviceType; });
+    document.querySelectorAll('input[name="ip_address"]').forEach(el => { el.value = geoData.ip; });
+    document.querySelectorAll('input[name="ip_location"]').forEach(el => { el.value = geoData.location; });
+  }
+
+  let geoPromise = null;
+  if (!geoData.ip) {
+    geoPromise = fetch('https://ipwho.is/')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.success !== false) {
+          geoData = {
+            ip: data.ip || '',
+            city: data.city || '',
+            region: data.region || '',
+            country: data.country || '',
+            postal: data.postal || '',
+            location: [data.city, data.region, data.country].filter(Boolean).join(', ') + (data.postal ? ` (${data.postal})` : ''),
+            isp: (data.connection && (data.connection.isp || data.connection.org)) || ''
+          };
+          try {
+            sessionStorage.setItem('_max59_geo', JSON.stringify(geoData));
+          } catch (e) {}
+          syncHiddenInputs();
+        }
+      })
+      .catch(() => {
+        // Fallback: at least capture public IP address via api.ipify.org
+        return fetch('https://api.ipify.org?format=json')
+          .then(res => res.json())
+          .then(d => {
+            if (d && d.ip) {
+              geoData.ip = d.ip;
+              geoData.location = 'Unknown Location';
+              syncHiddenInputs();
+            }
+          })
+          .catch(() => {});
+      });
+  } else {
+    // Initial sync with cached geo
+    syncHiddenInputs();
+  }
+
   // ── Form handling ──
   function setupForm(formId, successId) {
     const form = document.getElementById(formId);
@@ -146,7 +270,7 @@
 
     if (!form || !success) return;
 
-    form.addEventListener('submit', function (e) {
+    form.addEventListener('submit', async function (e) {
       e.preventDefault();
 
       // Clear previous errors
@@ -230,16 +354,37 @@
 
       if (!valid) return;
 
+      // Ensure hidden inputs are updated
+      syncHiddenInputs();
+
+      // If geo data hasn't arrived yet on rapid submission, wait up to 600ms
+      if (!geoData.ip && geoPromise) {
+        try {
+          await Promise.race([geoPromise, new Promise(resolve => setTimeout(resolve, 600))]);
+        } catch (err) {}
+      }
+
       // Collect form data
       const formData = new FormData(form);
       const data = {};
       formData.forEach((value, key) => { data[key] = value; });
+
+      // Core lead data
       data.website   = window.location.hostname || 'maxestates59gurgaon.in';
       data._subject  = `New Lead — Max Estates Sector 59 (${data.website})`;
       data._template = 'table';
       data._captcha  = 'false';
       data.source    = formId; // track which form was submitted
       data.timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+      // Hidden marketing & tracking parameters
+      data.gclid       = tracking.gclid || '';
+      data.gbraid      = tracking.gbraid || '';
+      data.wbraid      = tracking.wbraid || '';
+      data.device_id   = deviceId;
+      data.device_type = deviceType;
+      data.ip_address  = geoData.ip || 'N/A';
+      data.ip_location = geoData.location || 'N/A';
 
       // Disable submit button while sending
       const submitBtn = form.querySelector('button[type="submit"]');
