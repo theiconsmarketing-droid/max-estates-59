@@ -1135,12 +1135,13 @@ a:hover { color: var(--accent-light); }
   margin-bottom: 40px;
 }
 .footer-brand .nav-logo-text {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
+  font-weight: 700;
   margin-bottom: 12px;
-  color: var(--text);
+  color: #212121 !important;
 }
 .footer-brand .nav-logo-text span {
-  color: var(--accent);
+  color: #763300 !important;
 }
 .footer-brand p {
   font-size: 0.85rem;
@@ -1148,26 +1149,38 @@ a:hover { color: var(--accent-light); }
   line-height: 1.7;
   margin-bottom: 20px;
 }
-.footer-social {
-  display: flex;
-  gap: 12px;
+.footer-brand-address {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 6px !important;
 }
-.footer-social a {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.footer-brand-address strong {
+  color: #333;
+}
+.footer-brand-landmarks {
+  font-size: 0.82rem;
+  color: #777;
+  line-height: 1.7;
+  margin-bottom: 0 !important;
+}
+.footer-landmark-icon {
+  vertical-align: -1px;
+  margin-right: 4px;
+}
+.footer-enquiry-desc {
+  font-size: 0.85rem;
   color: var(--text-dim);
-  transition: all 0.3s var(--ease-out);
+  margin-bottom: 16px;
+  line-height: 1.6;
 }
-.footer-social a:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  transform: translateY(-2px);
+.footer-enquire-btn {
+  padding: 10px 20px !important;
+  font-size: 0.82rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  color: #ffffff !important;
 }
 .footer-links h4 {
   font-family: var(--font-body);
