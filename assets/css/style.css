@@ -156,14 +156,20 @@ a:hover { color: var(--accent-light); }
   text-shadow: none;
   text-decoration: none;
 }
-.btn-primary {
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary:visited {
   background: linear-gradient(135deg, var(--accent), #b8943f);
   color: #ffffff !important;
+  text-decoration: none !important;
 }
 .btn-primary:hover {
   background: linear-gradient(135deg, var(--accent-light), var(--accent));
   transform: translateY(-2px);
   box-shadow: 0 8px 30px rgba(201,169,110,0.3);
+  color: #ffffff !important;
 }
 .btn-outline {
   background: transparent;
@@ -204,15 +210,23 @@ a:hover { color: var(--accent-light); }
 .navbar.scrolled .nav-logo-text { color: var(--text); }
 .navbar.scrolled .nav-logo-sub { color: var(--text-muted); }
 /* Nav links — dark & clearly legible on white background */
-.navbar.scrolled .nav-links a { color: var(--text); }
-.navbar.scrolled .nav-links a:hover { color: var(--accent); }
+.navbar.scrolled .nav-links a:not(.btn) { color: var(--text); }
+.navbar.scrolled .nav-links a:not(.btn):hover { color: var(--accent); }
 .navbar.scrolled .mobile-toggle span { background: var(--text); }
-/* CTA button — solid gold on scrolled white navbar */
-.navbar.scrolled .nav-cta {
+/* CTA button — solid bronze/gold on scrolled white navbar */
+.navbar.scrolled .nav-cta,
+.navbar.scrolled .nav-cta:hover,
+.navbar.scrolled .nav-cta:focus,
+.navbar.scrolled .nav-cta:active {
   background: var(--accent) !important;
-  color: #fff !important;
+  color: #ffffff !important;
   border-color: var(--accent) !important;
   opacity: 1 !important;
+  text-decoration: none !important;
+}
+.navbar.scrolled .nav-cta:hover {
+  background: #5d2800 !important;
+  color: #ffffff !important;
 }
 .navbar .container {
   display: flex;
@@ -250,7 +264,7 @@ a:hover { color: var(--accent-light); }
   gap: 32px;
   list-style: none;
 }
-.nav-links a {
+.nav-links a:not(.btn) {
   font-size: 0.82rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
@@ -259,7 +273,7 @@ a:hover { color: var(--accent-light); }
   transition: color 0.3s var(--ease-out);
   position: relative;
 }
-.nav-links a::after {
+.nav-links a:not(.btn)::after {
   content: '';
   position: absolute;
   bottom: -4px;
@@ -269,11 +283,29 @@ a:hover { color: var(--accent-light); }
   background: var(--accent);
   transition: width 0.3s var(--ease-out);
 }
-.nav-links a:hover { color: var(--accent-light); }
-.nav-links a:hover::after { width: 100%; }
-.nav-cta {
+.nav-links a:not(.btn):hover { color: var(--accent-light); }
+.nav-links a:not(.btn):hover::after { width: 100%; }
+.nav-cta,
+.nav-cta:hover,
+.nav-cta:focus,
+.nav-cta:active,
+.navbar .nav-cta,
+.navbar .nav-cta:hover,
+.navbar .nav-cta:focus,
+.navbar .nav-cta:active,
+.navbar.scrolled .nav-cta,
+.navbar.scrolled .nav-cta:hover {
   padding: 10px 24px !important;
   font-size: 0.78rem !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+.nav-cta::after,
+.nav-cta:hover::after,
+.navbar .nav-cta::after,
+.navbar.scrolled .nav-cta::after {
+  display: none !important;
+  content: none !important;
 }
 .mobile-toggle {
   display: none;
