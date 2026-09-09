@@ -158,7 +158,7 @@ a:hover { color: var(--accent-light); }
 }
 .btn-primary {
   background: linear-gradient(135deg, var(--accent), #b8943f);
-  color: var(--primary-deep);
+  color: #ffffff !important;
 }
 .btn-primary:hover {
   background: linear-gradient(135deg, var(--accent-light), var(--accent));
@@ -1152,13 +1152,19 @@ a:hover { color: var(--accent-light); }
 .footer-links li {
   margin-bottom: 10px;
 }
-.footer-links a {
+.footer-links a:not(.btn) {
   font-size: 0.85rem;
   color: var(--text-muted);
   transition: color 0.3s var(--ease-out);
 }
-.footer-links a:hover {
+.footer-links a:not(.btn):hover {
   color: var(--accent-light);
+}
+.footer-links .btn {
+  color: #ffffff !important;
+}
+.footer-links .btn svg {
+  stroke: #ffffff !important;
 }
 .footer-bottom {
   border-top: 1px solid var(--border);
