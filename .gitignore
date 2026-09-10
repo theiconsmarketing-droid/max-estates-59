@@ -13,9 +13,6 @@ npm-debug.log
 yarn-error.log
 yarn.lock
 
-# TypeScript build output (compiled locally, not committed)
-dist/
-
 # Environment
 .env
 .env.local

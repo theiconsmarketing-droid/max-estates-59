@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "ts-node src/server.ts",
     "build": "tsc",
+    "postinstall": "tsc || true",
     "start": "node dist/server.js",
     "prebuild": "rm -rf dist"
   },
