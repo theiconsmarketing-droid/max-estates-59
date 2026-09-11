@@ -65,6 +65,15 @@ app.get('/health', (_req: Request, res: Response): void => {
   res.status(200).json({ status: 'ok', service: 'max-estates-59' });
 });
 
+// ── Explicit page routes ──
+app.get('/thank-you', (_req: Request, res: Response): void => {
+  res.sendFile(path.join(__dirname, '..', 'thank-you.html'));
+});
+
+app.get('/privacy-policy', (_req: Request, res: Response): void => {
+  res.sendFile(path.join(__dirname, '..', 'privacy-policy.html'));
+});
+
 // ── SPA fallback: all unmatched GET requests → index.html ──
 app.get('/{*path}', (_req: Request, res: Response): void => {
   res.sendFile(path.join(__dirname, '..', 'index.html'));

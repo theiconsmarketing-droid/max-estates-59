@@ -1269,6 +1269,26 @@ a:hover { color: var(--accent-light); }
   color: var(--text-muted);
   margin-top: 12px;
 }
+.footer-legal-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+.footer-legal-bar .footer-copyright {
+  margin-top: 0;
+}
+.footer-legal-link {
+  font-size: 0.75rem;
+  color: var(--accent);
+  text-decoration: underline;
+  transition: color 0.2s var(--ease-out);
+}
+.footer-legal-link:hover {
+  color: var(--accent-light);
+}
 
 /* ============================================================
    FLOATING CTA (Mobile)

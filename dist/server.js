@@ -38,6 +38,12 @@ app.use(express_1.default.static(path_1.default.join(__dirname, '..'), {
 app.get('/health', (_req, res) => {
     res.status(200).json({ status: 'ok', service: 'max-estates-59' });
 });
+app.get('/thank-you', (_req, res) => {
+    res.sendFile(path_1.default.join(__dirname, '..', 'thank-you.html'));
+});
+app.get('/privacy-policy', (_req, res) => {
+    res.sendFile(path_1.default.join(__dirname, '..', 'privacy-policy.html'));
+});
 app.get('/{*path}', (_req, res) => {
     res.sendFile(path_1.default.join(__dirname, '..', 'index.html'));
 });
