@@ -137,8 +137,7 @@
   // ── Form Endpoints ──
   // Replace this with your published Google Apps Script Web App URL
   const GOOGLE_SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxHhNakHiHDS3-W4hNg7RiUCUE_SquL9LIpYWwDeHKaQY2y5ujQjXSo1f1rDocrYOyXxQ/exec';
-  const FORMSUBMIT_URL = 'https://formsubmit.co/ajax/iconsn6@gmail.com';
-  const FORMSUBMIT_CC  = 'rathiglobalrealtyservices@gmail.com';
+  const FORMSUBMIT_URL = 'https://formsubmit.co/ajax/rathiglobalrealtyservices@gmail.com';
   const TELECRM_API_URL = 'https://next-api.telecrm.in/enterprise/6926c7d748e8b3e9aa584f34/autoupdatelead';
   const TELECRM_API_KEY = '6926c7d748e8b3e9aa584f34';
 
@@ -377,7 +376,6 @@
       data._subject  = `New Lead — Max Estates Sector 59 (${data.website})`;
       data._template = 'table';
       data._captcha  = 'false';
-      data._cc       = FORMSUBMIT_CC;
       data.source    = formId; // track which form was submitted
       data.timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
@@ -411,7 +409,7 @@
         );
       }
 
-      // 2. Post to FormSubmit AJAX (for instant email delivery to iconsn6@gmail.com & CC to rathiglobalrealtyservices@gmail.com)
+      // 2. Post to FormSubmit AJAX (for instant email delivery to rathiglobalrealtyservices@gmail.com)
       if (FORMSUBMIT_URL) {
         promises.push(
           fetch(FORMSUBMIT_URL, {

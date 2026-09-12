@@ -10,7 +10,7 @@ Built with **HTML / CSS / Vanilla JS** on the frontend, served by a **Node.js + 
 - **Premium Design** — Sleek, modern aesthetic matching the Max Estates luxury brand
 - **Lead Generation** — Floating CTA, responsive popup modal, and three integrated forms
 - **Google Sheets Integration** — Leads logged via Google Apps Script webhook
-- **FormSubmit** — Instant email delivery to iconsn6@gmail.com & rathiglobalrealtyservices@gmail.com (CC)
+- **FormSubmit** — Instant email delivery to rathiglobalrealtyservices@gmail.com
 - **TeleCRM Integration** — Instant lead sync to TeleCRM via autoupdatelead API
 - **Thank You Page** — Redirect on submission for Google Ads conversion tracking
 - **Fully Responsive** — Optimized for mobile, tablet, and desktop
