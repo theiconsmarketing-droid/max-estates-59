@@ -465,26 +465,35 @@
         const telecrmHeaders = {
           'Content-Type': 'application/json'
         };
-        if (TELECRM_API_KEY) {
-          telecrmHeaders['Authorization'] = `Bearer ${TELECRM_API_KEY}`;
-        }
-
+        // Try server proxy first (reads TELECRM_API_KEY environment variable on server), fallback to direct API
         promises.push(
-          fetch(TELECRM_API_URL, {
+          fetch('/api/telecrm', {
             method: 'POST',
-            headers: telecrmHeaders,
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(telecrmPayload)
           })
-          .then(res => res.json())
+          .then(async res => {
+            if (!res.ok && res.status === 404) {
+              // Server endpoint not active (e.g. static hosting), fallback to direct TeleCRM API
+              const directHeaders = { 'Content-Type': 'application/json' };
+              if (TELECRM_API_KEY) directHeaders['Authorization'] = `Bearer ${TELECRM_API_KEY}`;
+              return fetch(TELECRM_API_URL, {
+                method: 'POST',
+                headers: directHeaders,
+                body: JSON.stringify(telecrmPayload)
+              }).then(r => r.json());
+            }
+            return res.json();
+          })
           .then(resData => {
             if (resData && resData.error) {
-              console.warn('[TeleCRM] API response notice:', resData.error);
+              console.warn('[TeleCRM] API notice:', resData.error);
             } else {
-              console.log('[TeleCRM] Lead submitted successfully:', resData);
+              console.log('[TeleCRM] Lead sync successful:', resData);
             }
             return resData;
           })
-          .catch(err => console.warn('[TeleCRM] Network error:', err))
+          .catch(err => console.warn('[TeleCRM] Error:', err))
         );
       }
 

@@ -14,6 +14,8 @@ app.use((0, helmet_1.default)({
     crossOriginEmbedderPolicy: false,
 }));
 app.use((0, compression_1.default)());
+app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: true }));
 app.use((req, res, next) => {
     if (process.env.NODE_ENV === 'production' &&
         req.headers['x-forwarded-proto'] !== 'https') {
@@ -43,6 +45,30 @@ app.get('/thank-you', (_req, res) => {
 });
 app.get('/privacy-policy', (_req, res) => {
     res.sendFile(path_1.default.join(__dirname, '..', 'privacy-policy.html'));
+});
+app.post('/api/telecrm', async (req, res) => {
+    const enterpriseId = process.env.TELECRM_ENTERPRISE_ID || '6926c7d748e8b3e9aa584f34';
+    const apiKey = process.env.TELECRM_API_KEY || '';
+    try {
+        const telecrmUrl = `https://next-api.telecrm.in/enterprise/${enterpriseId}/autoupdatelead`;
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        if (apiKey) {
+            headers['Authorization'] = `Bearer ${apiKey}`;
+        }
+        const response = await fetch(telecrmUrl, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(req.body)
+        });
+        const data = await response.json();
+        res.status(response.status).json(data);
+    }
+    catch (error) {
+        console.error('[TeleCRM Proxy Error]:', error);
+        res.status(500).json({ error: 'Failed to forward to TeleCRM' });
+    }
 });
 app.get('/{*path}', (_req, res) => {
     res.sendFile(path_1.default.join(__dirname, '..', 'index.html'));

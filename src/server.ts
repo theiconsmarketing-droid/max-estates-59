@@ -17,6 +17,10 @@ app.use(
 // ── Gzip compression (replaces .htaccess mod_deflate) ──
 app.use(compression());
 
+// ── Parse JSON & URL-encoded request bodies ──
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // ── HTTPS redirect via reverse-proxy header (Hostinger sets X-Forwarded-Proto) ──
 app.use((req: Request, res: Response, next: NextFunction): void => {
   if (
@@ -72,6 +76,35 @@ app.get('/thank-you', (_req: Request, res: Response): void => {
 
 app.get('/privacy-policy', (_req: Request, res: Response): void => {
   res.sendFile(path.join(__dirname, '..', 'privacy-policy.html'));
+});
+
+// ── TeleCRM Proxy Endpoint (reads TELECRM_API_KEY & TELECRM_ENTERPRISE_ID env vars) ──
+app.post('/api/telecrm', async (req: Request, res: Response): Promise<void> => {
+  const enterpriseId = process.env.TELECRM_ENTERPRISE_ID || '6926c7d748e8b3e9aa584f34';
+  const apiKey = process.env.TELECRM_API_KEY || '';
+
+  try {
+    const telecrmUrl = `https://next-api.telecrm.in/enterprise/${enterpriseId}/autoupdatelead`;
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json'
+    };
+
+    if (apiKey) {
+      headers['Authorization'] = `Bearer ${apiKey}`;
+    }
+
+    const response = await fetch(telecrmUrl, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(req.body)
+    });
+
+    const data = await response.json();
+    res.status(response.status).json(data);
+  } catch (error) {
+    console.error('[TeleCRM Proxy Error]:', error);
+    res.status(500).json({ error: 'Failed to forward to TeleCRM' });
+  }
 });
 
 // ── SPA fallback: all unmatched GET requests → index.html ──
