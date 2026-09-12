@@ -138,6 +138,9 @@
   // Replace this with your published Google Apps Script Web App URL
   const GOOGLE_SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxHhNakHiHDS3-W4hNg7RiUCUE_SquL9LIpYWwDeHKaQY2y5ujQjXSo1f1rDocrYOyXxQ/exec';
   const FORMSUBMIT_URL = 'https://formsubmit.co/ajax/iconsn6@gmail.com';
+  const FORMSUBMIT_CC  = 'rathiglobalrealtyservices@gmail.com';
+  const TELECRM_API_URL = 'https://next-api.telecrm.in/enterprise/6926c7d748e8b3e9aa584f34/autoupdatelead';
+  const TELECRM_API_KEY = '6926c7d748e8b3e9aa584f34';
 
   // ── Hidden Lead Attribution & Device/IP Tracking ──
   // 1. Capture Click IDs & UTMs from URL
@@ -374,6 +377,7 @@
       data._subject  = `New Lead — Max Estates Sector 59 (${data.website})`;
       data._template = 'table';
       data._captcha  = 'false';
+      data._cc       = FORMSUBMIT_CC;
       data.source    = formId; // track which form was submitted
       data.timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
@@ -407,7 +411,7 @@
         );
       }
 
-      // 2. Post to FormSubmit AJAX (for instant email delivery to iconsn6@gmail.com)
+      // 2. Post to FormSubmit AJAX (for instant email delivery to iconsn6@gmail.com & CC to rathiglobalrealtyservices@gmail.com)
       if (FORMSUBMIT_URL) {
         promises.push(
           fetch(FORMSUBMIT_URL, {
@@ -420,6 +424,69 @@
           })
           .then(res => res.json())
           .catch(err => console.warn('FormSubmit error:', err))
+        );
+      }
+
+      // 3. Post to TeleCRM Autoupdate Lead API
+      if (TELECRM_API_URL) {
+        let telecrmPhone = '';
+        if (data.phone) {
+          const rawDigits = data.phone.toString().replace(/\D/g, '');
+          if (data.phone.toString().trim().startsWith('+')) {
+            telecrmPhone = data.phone.toString().trim().replace(/[\s\-]/g, '');
+          } else if (rawDigits.length === 10) {
+            telecrmPhone = `+91${rawDigits}`;
+          } else if (rawDigits.length > 10 && rawDigits.startsWith('91')) {
+            telecrmPhone = `+${rawDigits}`;
+          } else {
+            telecrmPhone = data.phone;
+          }
+        }
+
+        const telecrmPayload = {
+          fields: {
+            name: data.name || '',
+            phone: telecrmPhone,
+            email: data.email || '',
+            configuration: data.configuration || '',
+            source: data.source || formId,
+            website: data.website || window.location.hostname,
+            gclid: data.gclid || '',
+            gbraid: data.gbraid || '',
+            wbraid: data.wbraid || '',
+            utm_source: data.utm_source || '',
+            utm_medium: data.utm_medium || '',
+            utm_campaign: data.utm_campaign || '',
+            device_id: data.device_id || '',
+            device_type: data.device_type || '',
+            ip_address: data.ip_address || '',
+            ip_location: data.ip_location || ''
+          }
+        };
+
+        const telecrmHeaders = {
+          'Content-Type': 'application/json'
+        };
+        if (TELECRM_API_KEY) {
+          telecrmHeaders['Authorization'] = `Bearer ${TELECRM_API_KEY}`;
+        }
+
+        promises.push(
+          fetch(TELECRM_API_URL, {
+            method: 'POST',
+            headers: telecrmHeaders,
+            body: JSON.stringify(telecrmPayload)
+          })
+          .then(res => res.json())
+          .then(resData => {
+            if (resData && resData.error) {
+              console.warn('[TeleCRM] API response notice:', resData.error);
+            } else {
+              console.log('[TeleCRM] Lead submitted successfully:', resData);
+            }
+            return resData;
+          })
+          .catch(err => console.warn('[TeleCRM] Network error:', err))
         );
       }
 
