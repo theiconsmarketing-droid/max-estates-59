@@ -271,8 +271,9 @@
     const yyyy = now.getFullYear();
     const mm = String(now.getMonth() + 1).padStart(2, '0');
     const dd = String(now.getDate()).padStart(2, '0');
-    const randomChars = Math.random().toString(36).substring(2, 7).toUpperCase();
-    return `MAX59-${yyyy}${mm}${dd}-${randomChars}`;
+    const timePart = Date.now().toString().slice(-4);
+    const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return `MAX59-${yyyy}${mm}${dd}-${timePart}${randomPart}`;
   }
 
   // ── Form handling ──
