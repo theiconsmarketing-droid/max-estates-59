@@ -1579,3 +1579,114 @@ body.paused *, body.paused *::before, body.paused *::after {
 .mb-52 { margin-bottom: 52px; }
 .modal-cta-card-style { width: 100%; border: none; background: transparent; padding: 0; }
 .bg-interior-living { background-image: url('../images/interior-living.jpg'); }
+
+/* ============================================================
+   LEGAL & PRIVACY POLICY PAGES
+   ============================================================ */
+.legal-wrapper {
+  min-height: 100vh;
+  padding: 120px 20px 60px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.legal-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 48px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+.legal-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 24px;
+  margin-bottom: 32px;
+}
+.legal-header h1 {
+  font-size: 2.2rem;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.legal-updated {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+.legal-section {
+  margin-bottom: 28px;
+}
+.legal-section h2 {
+  font-size: 1.25rem;
+  color: var(--text);
+  margin-bottom: 12px;
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+.legal-section p,
+.legal-section li {
+  font-size: 0.92rem;
+  color: var(--text-dim);
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+.legal-section ul {
+  padding-left: 20px;
+  margin-bottom: 12px;
+}
+.legal-highlight-box {
+  background: rgba(118, 51, 0, 0.04);
+  border-left: 4px solid var(--accent);
+  padding: 18px 20px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin: 20px 0;
+}
+.legal-highlight-box p {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+.legal-highlight-link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s ease;
+}
+.legal-highlight-link:hover {
+  opacity: 0.85;
+}
+.legal-contact-box {
+  background: var(--surface-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin-top: 24px;
+}
+.legal-contact-box h3 {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.legal-contact-link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s ease;
+}
+.legal-contact-link:hover {
+  opacity: 0.85;
+}
+.legal-actions {
+  margin-top: 40px;
+  display: flex;
+  gap: 16px;
+  justify-content: flex-start;
+}
+@media (max-width: 768px) {
+  .legal-card {
+    padding: 24px 20px;
+  }
+  .legal-header h1 {
+    font-size: 1.7rem;
+  }
+}
+
