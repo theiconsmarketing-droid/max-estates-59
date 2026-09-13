@@ -53,6 +53,35 @@
       color: var(--text-dim);
       font-size: 1.1rem;
     }
+    .thank-you-ref-card {
+      background: rgba(201, 169, 110, 0.08);
+      border: 1px solid rgba(201, 169, 110, 0.28);
+      border-radius: 12px;
+      padding: 14px 24px;
+      margin-bottom: 28px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    .thank-you-ref-card.is-hidden {
+      display: none;
+    }
+    .thank-you-ref-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+    .thank-you-ref-code {
+      font-size: 1.25rem;
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+    }
   </style>
 </head>
 <body>
@@ -86,9 +115,39 @@
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
     </div>
     <h1>Thank You!</h1>
+    <div class="thank-you-ref-card is-hidden" id="refCard">
+      <span class="thank-you-ref-label">Transaction Reference ID</span>
+      <span class="thank-you-ref-code" id="txnIdDisplay"></span>
+    </div>
     <p>Your details have been successfully submitted.<br>Our team will reach out to you within 24 hours with exclusive pricing and floor plans.</p>
     <a href="index.html" class="btn btn-primary">Return to Home</a>
   </main>
+
+  <script>
+    (function() {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var tid = params.get('tid') || sessionStorage.getItem('_max59_tid') || '';
+        if (tid) {
+          var codeEl = document.getElementById('txnIdDisplay');
+          var cardEl = document.getElementById('refCard');
+          if (codeEl) codeEl.textContent = tid;
+          if (cardEl) cardEl.classList.remove('is-hidden');
+        }
+
+        // Push conversion event with transaction_id to dataLayer for Google Ads deduplication
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: 'lead_form_submitted',
+          transaction_id: tid || ('MAX59-' + Date.now()),
+          value: 1.0,
+          currency: 'INR'
+        });
+      } catch (e) {
+        console.warn('Thank you page tracking error:', e);
+      }
+    })();
+  </script>
 
 </body>
 </html>

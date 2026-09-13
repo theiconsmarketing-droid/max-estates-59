@@ -265,6 +265,16 @@
     syncHiddenInputs();
   }
 
+  // ── Helper: generate unique Transaction ID for CRM, Google Sheets, & conversion deduplication ──
+  function generateTransactionId() {
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const randomChars = Math.random().toString(36).substring(2, 7).toUpperCase();
+    return `MAX59-${yyyy}${mm}${dd}-${randomChars}`;
+  }
+
   // ── Form handling ──
   function setupForm(formId, successId) {
     const form = document.getElementById(formId);
@@ -366,14 +376,24 @@
         } catch (err) {}
       }
 
+      // 1. Generate unique Transaction ID for this inquiry
+      const transactionId = generateTransactionId();
+
+      // Populate hidden inputs in the form
+      const tidInput = form.querySelector('input[name="transaction_id"]');
+      if (tidInput) tidInput.value = transactionId;
+
       // Collect form data
       const formData = new FormData(form);
       const data = {};
       formData.forEach((value, key) => { data[key] = value; });
 
-      // Core lead data
+      // Core lead & transaction identification data
+      data.transaction_id = transactionId;
+      data.transactionId  = transactionId;
+      data.txn_id         = transactionId;
       data.website   = window.location.hostname || 'maxestates59gurgaon.in';
-      data._subject  = `New Lead — Max Estates Sector 59 (${data.website})`;
+      data._subject  = `New Lead [${transactionId}] — Max Estates Sector 59 (${data.website})`;
       data._template = 'table';
       data._captcha  = 'false';
       data.source    = formId; // track which form was submitted
@@ -458,8 +478,12 @@
             device_id: data.device_id || '',
             device_type: data.device_type || '',
             ip_address: data.ip_address || '',
-            ip_location: data.ip_location || ''
-          }
+            ip_location: data.ip_location || '',
+            transaction_id: transactionId
+          },
+          notes: [
+            `Transaction ID: ${transactionId} | Website: ${data.website || window.location.hostname} | Config: ${data.configuration || 'N/A'}`
+          ]
         };
 
         const telecrmHeaders = {
@@ -497,13 +521,20 @@
         );
       }
 
+      // Persist Transaction ID for thank-you page & conversion deduplication
+      try {
+        sessionStorage.setItem('_max59_tid', transactionId);
+      } catch (e) {}
+
+      const thankYouUrl = `thank-you.html?tid=${encodeURIComponent(transactionId)}`;
+
       // Handle UI after submission attempts — redirect to thank-you page
       // so GTM fires and Google Ads conversion is tracked
       Promise.allSettled(promises).then(() => {
-        window.location.href = 'thank-you.html';
+        window.location.href = thankYouUrl;
       }).catch(() => {
         // Redirect anyway so conversion tracking still fires
-        window.location.href = 'thank-you.html';
+        window.location.href = thankYouUrl;
       });
     });
   }
